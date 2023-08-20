@@ -1,5 +1,5 @@
 import sqlite3 as sql
-import text
+from text import Text as text
 class datab:
     con = sql.Connection
     cur = sql.Cursor
@@ -40,8 +40,8 @@ class datab:
             if exists != None:
                 datab.cur.execute(f"DELETE FROM texts WHERE title='{datab.title}'")
                 datab.con.commit()
-                return "Успешно удалено"
+                return text.deleted
             else:
-                return "Во время удаления произошла ошибка. Скорее всего такого заголовка не существует."
+                return text.not_found
         except:
-            return "Во время удаления произошла ошибка.\n\nНапишите в Discord моему разработчику - jerryimmouse"
+            return text.crit_delete_error
