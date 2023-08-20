@@ -3,6 +3,7 @@
 
 # Own
 config.py
+files.db
 
 
 # Byte-compiled / optimized / DLL files
