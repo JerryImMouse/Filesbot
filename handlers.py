@@ -23,7 +23,7 @@ router = Router()
 async def start_handler(msg: Message):
     await msg.delete()
     misc.msg_to_edit = await msg.answer(text.greet.format(name=msg.from_user.full_name), reply_markup=kb.menu)
-    misc.log(text.started.format(user_id=msg.from_user.id, username=msg.from_user.full_name))
+    misc.log(text.log_started.format(user_id=msg.from_user.id, username=msg.from_user.full_name))
 
 @router.callback_query(F.data == "menu_show")
 async def callback_menu(callback: types.CallbackQuery):
