@@ -13,7 +13,6 @@ class datab:
 
     def addtodb():
         exists = datab.cur.execute(f"SELECT title FROM texts WHERE title='{datab.title}'"); exists = datab.cur.fetchone()
-        print(exists)
         if exists == None: pass
         else: return text.failed_to_upload
         try:
@@ -36,7 +35,7 @@ class datab:
         return target
     
     def deletefromdb():
-        #try:
+        try:
             exists = datab.cur.execute(f"SELECT * FROM texts WHERE title='{datab.title}'"); exists = datab.cur.fetchone()
             if exists != None:
                 datab.cur.execute(f"DELETE FROM texts WHERE title='{datab.title}'")
@@ -44,5 +43,5 @@ class datab:
                 return "Успешно удалено"
             else:
                 return "Во время удаления произошла ошибка. Скорее всего такого заголовка не существует."
-        #except:
-            #return "Во время удаления произошла ошибка.\n\nНапишите в Discord моему разработчику - jerryimmouse"
+        except:
+            return "Во время удаления произошла ошибка.\n\nНапишите в Discord моему разработчику - jerryimmouse"
