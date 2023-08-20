@@ -129,7 +129,7 @@ async def guide(callback: types.CallbackQuery):
 
 @router.message(Command("github"))
 async def cmd_github(msg: Message):
-    await msg.answer("GitHub: https://github.com/JerryImMouse", reply_markup=kb.menu)
+    await msg.answer("GitHub: https://github.com/JerryImMouse/Filesbot", reply_markup=kb.menu)
 
 @router.message(Command("guide"))
 async def cmd_guide(msg: Message):
