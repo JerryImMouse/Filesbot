@@ -8,7 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from filters import IDFilter
 from db import datab
-
+import logging
 import kb, config
 from additional import Additions
 from text import Text as text
@@ -23,7 +23,7 @@ router = Router()
 async def start_handler(msg: Message):
     await msg.delete()
     misc.msg_to_edit = await msg.answer(text.greet.format(name=msg.from_user.full_name), reply_markup=kb.menu)
-    misc.log(text.log_started.format(user_id=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.log_started.format(user_id=msg.from_user.id, username=msg.from_user.full_name))
 
 @router.callback_query(F.data == "menu_show")
 async def callback_menu(callback: types.CallbackQuery):
@@ -34,7 +34,7 @@ async def callback_menu(callback: types.CallbackQuery):
 async def cancel(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
     await callback.message.edit_text(text.canceled, reply_markup=kb.menu)
-    misc.log(text.log_canceled.format(userid=callback.from_user.id, username=callback.from_user.full_name))
+    logging.info(text.log_canceled.format(userid=callback.from_user.id, username=callback.from_user.full_name))
 
 
 #endregion
@@ -57,7 +57,7 @@ async def title_to_get_chosen(msg: Message, state: FSMContext):
     datab.title = msg.text
     await misc.msg_to_edit.edit_text(text=datab.getfromdb(), reply_markup=kb.menu)
     await msg.delete()
-    misc.log(text.log_got.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.log_got.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region UploadText
 
@@ -79,7 +79,7 @@ async def text_typed(msg: Message, state: FSMContext):
     await state.clear()
     datab.text = msg.text; ans = datab.addtodb()
     await misc.msg_to_edit.edit_text(text=ans, reply_markup=kb.menu); await msg.delete()
-    misc.log(text.log_upload.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.log_upload.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region INFO
 @router.callback_query(F.data == "info")
@@ -124,7 +124,7 @@ async def delete_text(msg: Message, state: FSMContext):
     datab.title = msg.text
     await misc.msg_to_edit.edit_text(text=datab.deletefromdb(), reply_markup=kb.menu)
     await msg.delete()
-    misc.log(text.log_deleted.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.log_deleted.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region Misc
 
