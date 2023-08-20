@@ -9,7 +9,7 @@ menu = [
     #endregion
     
     #region Info
-    [InlineKeyboardButton(text="🆑GitHub", url="https://github.com/JerryImMouse"), 
+    [InlineKeyboardButton(text="🆑GitHub", url="https://github.com/JerryImMouse/Filesbot"), 
      InlineKeyboardButton(text="👨‍💻BotGuide", callback_data="guide"), 
      InlineKeyboardButton(text="ℹ️Info", callback_data="info")],
     #endregion

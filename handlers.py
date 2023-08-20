@@ -6,10 +6,12 @@ from states import Gen
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 
+from filters import IDFilter
 import kb
 from db import datab
 import db
 import text
+import config
 
 datab.makeconnection()
 router = Router()
@@ -71,7 +73,7 @@ async def cmd_get_text(msg: Message, state: FSMContext):
 #endregion
 #region UploadText
 
-@router.callback_query(F.data == "upload")
+@router.callback_query(IDFilter([config.IDS]), F.data == "upload")
 async def upload_text(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(Gen.choosingTitle)
     await callback.message.answer(text.choose_title_upload)
@@ -90,7 +92,7 @@ async def text_typed(msg: Message, state: FSMContext):
     await msg.answer(datab.addtodb())
     await msg.answer(text.menu, reply_markup=kb.menu)
 
-@router.message(Command("upload"))
+@router.message(IDFilter(config.IDS), Command("upload"))
 async def cmd_upload_text(msg: Message, state: FSMContext):
     await state.set_state(Gen.choosingTitle)
     await msg.answer(text.choose_title_upload)
@@ -141,7 +143,7 @@ async def cmd_info(msg: Message):
 #endregion
 #region DeleteText
 
-@router.callback_query(F.data == "delete")
+@router.callback_query(IDFilter(config.IDS), F.data == "delete")
 async def choose_delete(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(Gen.choosingTitleToDelete)
     titles = datab.getalltitles()
