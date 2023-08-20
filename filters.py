@@ -11,12 +11,10 @@ class IDFilter(BaseFilter):
     async def __call__(self, msg: Message) -> bool:
         if type(self.id) == list:
             for el in self.id:
-                print(el)
                 if msg.from_user.id == el:
                     return True
                 else: pass
         else: 
             if msg.from_user.id == self.id:
-                print(self.id)
                 return True
             else: return False

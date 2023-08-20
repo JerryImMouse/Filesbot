@@ -1,5 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 
+cancel = [[InlineKeyboardButton(text="Отмена", callback_data="cancel")]]
+
 menu = [
     
     #region Functions
@@ -16,10 +18,11 @@ menu = [
     
     #region Menu
     [InlineKeyboardButton(text="📃Список заголовков", callback_data="list")],
-    [InlineKeyboardButton(text="📖Главное меню", callback_data="menu_show")]
+    [InlineKeyboardButton(text="📖Главное меню", callback_data="menu_show")],
     #endregion
 
 ]
+cancel = InlineKeyboardMarkup(inline_keyboard=cancel)
 menu = InlineKeyboardMarkup(inline_keyboard=menu)
 exit_kb = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="◀️ Выйти в меню")]], resize_keyboard=True)
 iexit_kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="◀️ Выйти в меню", callback_data="menu")]])
