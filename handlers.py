@@ -3,6 +3,7 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram import types, F, Router
 from aiogram import flags
+from aiogram.enums.content_type import ContentType
 from states import Gen
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -130,7 +131,7 @@ async def delete_text(msg: Message, state: FSMContext):
 
 @router.message()
 async def miscmsg(msg: Message):
-    misc.log(text.unknown_message.format(message=msg.text, userid=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.unknown_message.format(message=msg.text, userid=msg.from_user.id, username=msg.from_user.full_name))
     await msg.delete()
 
 
