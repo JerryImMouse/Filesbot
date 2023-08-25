@@ -4,7 +4,7 @@
 # Own
 config.py
 files.db
-
+.github
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
