@@ -21,6 +21,7 @@ router = Router()
 
 @router.message(Command("start"))
 async def start_handler(msg: Message):
+    
     await msg.delete()
     misc.msg_to_edit = await msg.answer(text.greet.format(name=msg.from_user.full_name), reply_markup=kb.menu)
     logging.info(text.log_started.format(user_id=msg.from_user.id, username=msg.from_user.full_name))
@@ -33,7 +34,9 @@ async def callback_menu(callback: types.CallbackQuery):
 @router.callback_query(F.data == "cancel")
 async def cancel(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
+    
     await callback.message.edit_text(text.canceled, reply_markup=kb.menu)
+    
     logging.info(text.log_canceled
                  .format(userid=callback.from_user.id, username=callback.from_user.full_name))
 
@@ -43,20 +46,24 @@ async def cancel(callback: types.CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "get")
 async def get_text(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(Gen.choosingTitleToGet)
+    
     titles = datab.getalltitles()
     titstr = ""
-    i = 1
+    i = 1 # Var to set a number for each title in string
     for title in titles:
-        titstr = titstr + str(i) + ") " + title[0] + "\n"
+        titstr = titstr + str(i) + ") " + title[0] + "\n" # Make a single string of titles
         i = i + 1
+    
     misc.msg_to_edit = await callback.message.edit_text(text=f'{text.choose_title_get}\n\n{titstr}', reply_markup=kb.cancel)
     await callback.answer()
 
 @router.message(Gen.choosingTitleToGet, F.text)
 async def title_to_get_chosen(msg: Message, state: FSMContext):
     await state.clear()
+    
     logging.info(text.log_got.format(
         title=datab.getfromdb(msg.text), userid=msg.from_user.id, username=msg.from_user.full_name))
+    
     await misc.msg_to_edit.edit_text(text=datab.getfromdb(msg.text), reply_markup=kb.menu)
     await msg.delete()
 #endregion
@@ -65,8 +72,10 @@ async def title_to_get_chosen(msg: Message, state: FSMContext):
 @router.callback_query(IDFilter(config.IDS), F.data == "upload")
 async def upload_text(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(Gen.choosingTitle)
+    
     misc.msg_to_edit = await callback.message.edit_text(
         text.choose_title_upload, reply_markup=kb.cancel)
+    
     await callback.answer()
 
 @router.message(Gen.choosingTitle, F.text)
@@ -91,17 +100,20 @@ async def bot_info(callback: types.CallbackQuery):
 
 @router.callback_query(F.data == "list")
 async def show_list(callback: types.CallbackQuery):
+    
     titles = datab.getalltitles()
     titstr = ""
     i = 1
     for title in titles:
         titstr = titstr + str(i) + ") " + title[0] + "\n"
         i = i + 1
+    
     misc.msg_to_edit = await callback.message.edit_text(text.titles_list + "\n\n" + titstr, reply_markup=kb.menu)
     await callback.answer()
 
 @router.callback_query(F.data == "guide")
 async def guide(callback: types.CallbackQuery):
+    
     misc.msg_to_edit = await callback.message.edit_text(text.guide, reply_markup=kb.menu) 
     await callback.answer()   
 
@@ -111,20 +123,25 @@ async def guide(callback: types.CallbackQuery):
 @router.callback_query(IDFilter(config.IDS), F.data == "delete")
 async def choose_delete(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(Gen.choosingTitleToDelete)
+    
     titles = datab.getalltitles()
     titstr = ""
     i = 1
     for title in titles:
         titstr = titstr + str(i) + ") " + title[0] + "\n"
         i = i + 1
+    
     misc.msg_to_edit = await callback.message.edit_text(
-        text=f'{text.choose_title_get}\n\n{titstr}', reply_markup=kb.cancel)
+        text=f'{text.choose_title_get}\n\n{titstr}', reply_markup=kb.cancel) # Answer user with a title list
+    
     await callback.answer()
 
 @router.message(Gen.choosingTitleToDelete, F.text)
 async def delete_text(msg: Message, state: FSMContext):
     await state.clear()
+    
     title = msg.text
+    
     await misc.msg_to_edit.edit_text(text=datab.deletefromdb(title), reply_markup=kb.menu)
     await msg.delete()
     logging.info(text.log_deleted
