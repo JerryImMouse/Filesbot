@@ -7,6 +7,9 @@ class datab:
     def makeconnection():
         datab.con = sql.connect('files.db')
         datab.cur = datab.con.cursor()
+        try: 
+            datab.cur.execute("""CREATE TABLE "texts" ("title" TEXT, "text" TEXT)""")
+        except: pass
 
     def addtodb(title, text):
         exists = datab.cur.execute(f"SELECT title FROM texts WHERE title='{title}'"); exists = datab.cur.fetchone()

@@ -34,7 +34,8 @@ async def callback_menu(callback: types.CallbackQuery):
 async def cancel(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
     await callback.message.edit_text(text.canceled, reply_markup=kb.menu)
-    logging.info(text.log_canceled.format(userid=callback.from_user.id, username=callback.from_user.full_name))
+    logging.info(text.log_canceled
+                 .format(userid=callback.from_user.id, username=callback.from_user.full_name))
 
 
 #endregion
@@ -64,7 +65,8 @@ async def title_to_get_chosen(msg: Message, state: FSMContext):
 @router.callback_query(IDFilter(config.IDS), F.data == "upload")
 async def upload_text(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(Gen.choosingTitle)
-    misc.msg_to_edit = await callback.message.edit_text(text.choose_title_upload, reply_markup=kb.cancel)
+    misc.msg_to_edit = await callback.message.edit_text(
+        text.choose_title_upload, reply_markup=kb.cancel)
     await callback.answer()
 
 @router.message(Gen.choosingTitle, F.text)
@@ -78,7 +80,8 @@ async def text_typed(msg: Message, state: FSMContext):
     await misc.msg_to_edit.edit_text(text=ans, reply_markup=kb.menu)
     await msg.delete()
 
-    logging.info(text.log_upload.format(title=result[0], userid=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.log_upload
+                 .format(title=result[0], userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region INFO
 @router.callback_query(F.data == "info")
@@ -114,7 +117,8 @@ async def choose_delete(callback: types.CallbackQuery, state: FSMContext):
     for title in titles:
         titstr = titstr + str(i) + ") " + title[0] + "\n"
         i = i + 1
-    misc.msg_to_edit = await callback.message.edit_text(text=f'{text.choose_title_get}\n\n{titstr}', reply_markup=kb.cancel)
+    misc.msg_to_edit = await callback.message.edit_text(
+        text=f'{text.choose_title_get}\n\n{titstr}', reply_markup=kb.cancel)
     await callback.answer()
 
 @router.message(Gen.choosingTitleToDelete, F.text)
@@ -123,13 +127,15 @@ async def delete_text(msg: Message, state: FSMContext):
     title = msg.text
     await misc.msg_to_edit.edit_text(text=datab.deletefromdb(title), reply_markup=kb.menu)
     await msg.delete()
-    logging.info(text.log_deleted.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.log_deleted
+                 .format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region Misc
 
 @router.message()
 async def miscmsg(msg: Message):
-    logging.info(text.unknown_message.format(message=msg.text, userid=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.unknown_message
+                 .format(message=msg.text, userid=msg.from_user.id, username=msg.from_user.full_name))
     await msg.delete()
 
 
