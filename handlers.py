@@ -34,7 +34,8 @@ async def callback_menu(callback: types.CallbackQuery):
 async def cancel(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
     await callback.message.edit_text(text.canceled, reply_markup=kb.menu)
-    logging.info(text.log_canceled.format(userid=callback.from_user.id, username=callback.from_user.full_name))
+    logging.info(text.log_canceled
+                 .format(userid=callback.from_user.id, username=callback.from_user.full_name))
 
 
 #endregion
@@ -54,32 +55,33 @@ async def get_text(callback: types.CallbackQuery, state: FSMContext):
 @router.message(Gen.choosingTitleToGet, F.text)
 async def title_to_get_chosen(msg: Message, state: FSMContext):
     await state.clear()
-    datab.title = msg.text
-    await misc.msg_to_edit.edit_text(text=datab.getfromdb(), reply_markup=kb.menu)
+    logging.info(text.log_got.format(
+        title=datab.getfromdb(msg.text), userid=msg.from_user.id, username=msg.from_user.full_name))
+    await misc.msg_to_edit.edit_text(text=datab.getfromdb(msg.text), reply_markup=kb.menu)
     await msg.delete()
-    logging.info(text.log_got.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region UploadText
 
 @router.callback_query(IDFilter(config.IDS), F.data == "upload")
 async def upload_text(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(Gen.choosingTitle)
-    misc.msg_to_edit = await callback.message.edit_text(text.choose_title_upload, reply_markup=kb.cancel)
+    misc.msg_to_edit = await callback.message.edit_text(
+        text.choose_title_upload, reply_markup=kb.cancel)
     await callback.answer()
 
 @router.message(Gen.choosingTitle, F.text)
-async def title_chosen(msg: Message, state: FSMContext):
-    await state.set_state(Gen.typingText)
-    datab.title = msg.text
-    await msg.delete()
-    await misc.msg_to_edit.edit_text(text=text.insert_text, reply_markup=kb.cancel)
-
-@router.message(Gen.typingText, F.text)
 async def text_typed(msg: Message, state: FSMContext):
     await state.clear()
-    datab.text = msg.text; ans = datab.addtodb()
-    await misc.msg_to_edit.edit_text(text=ans, reply_markup=kb.menu); await msg.delete()
-    logging.info(text.log_upload.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
+    
+    result = msg.text.split("~") # Split result string on "title" and "text"
+
+    ans = datab.addtodb(title=result[0], text=result[1])
+
+    await misc.msg_to_edit.edit_text(text=ans, reply_markup=kb.menu)
+    await msg.delete()
+
+    logging.info(text.log_upload
+                 .format(title=result[0], userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region INFO
 @router.callback_query(F.data == "info")
@@ -115,22 +117,25 @@ async def choose_delete(callback: types.CallbackQuery, state: FSMContext):
     for title in titles:
         titstr = titstr + str(i) + ") " + title[0] + "\n"
         i = i + 1
-    misc.msg_to_edit = await callback.message.edit_text(text=f'{text.choose_title_get}\n\n{titstr}', reply_markup=kb.cancel)
+    misc.msg_to_edit = await callback.message.edit_text(
+        text=f'{text.choose_title_get}\n\n{titstr}', reply_markup=kb.cancel)
     await callback.answer()
 
 @router.message(Gen.choosingTitleToDelete, F.text)
 async def delete_text(msg: Message, state: FSMContext):
     await state.clear()
-    datab.title = msg.text
-    await misc.msg_to_edit.edit_text(text=datab.deletefromdb(), reply_markup=kb.menu)
+    title = msg.text
+    await misc.msg_to_edit.edit_text(text=datab.deletefromdb(title), reply_markup=kb.menu)
     await msg.delete()
-    logging.info(text.log_deleted.format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.log_deleted
+                 .format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region Misc
 
 @router.message()
 async def miscmsg(msg: Message):
-    misc.log(text.unknown_message.format(message=msg.text, userid=msg.from_user.id, username=msg.from_user.full_name))
+    logging.info(text.unknown_message
+                 .format(message=msg.text, userid=msg.from_user.id, username=msg.from_user.full_name))
     await msg.delete()
 
 
