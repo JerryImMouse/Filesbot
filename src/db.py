@@ -9,7 +9,7 @@ class datab:
         datab.cur = datab.con.cursor()
         
         try: 
-            datab.cur.execute("""CREATE TABLE "texts" ("title" TEXT, "text" TEXT)""") #Create table if it not exists
+            datab.cur.execute("""CREATE TABLE IF NOT EXISTS "texts" ("title" TEXT, "text" TEXT)""") #Create table if it not exists
         except: pass
 
     def addtodb(title, text):
