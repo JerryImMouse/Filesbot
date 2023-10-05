@@ -1,5 +1,5 @@
 
-# Project Title
+# Files Bot
 
 Telegram bot written on aiogram 3 library. It allows to store texts in it using sqlite3 database. Active development will improve its abilities.
 
