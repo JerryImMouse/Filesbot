@@ -80,17 +80,24 @@ async def upload_text(callback: types.CallbackQuery, state: FSMContext):
 
 @router.message(Gen.choosingTitle, F.text)
 async def text_typed(msg: Message, state: FSMContext):
-    await state.clear()
-    
     result = msg.text.split("~") # Split result string on "title" and "text"
+    if len(result[0]) > 100:
+        try:
+            await msg.delete()
+            logging.info(text.log_deleted_length
+                         .format(title=result[0], userid=msg.from_user.id, username=msg.from_user.full_name))
+        except: msg.delete()
+    else: 
+        await state.clear()
 
-    ans = datab.addtodb(title=result[0], text=result[1])
+        ans = datab.addtodb(title=result[0], text=result[1])
 
-    await misc.msg_to_edit.edit_text(text=ans, reply_markup=kb.menu)
-    await msg.delete()
+        await misc.msg_to_edit.edit_text(text=ans, reply_markup=kb.menu)
+        await msg.delete()
+    
+        logging.info(text.log_upload
+                        .format(title=result[0], userid=msg.from_user.id, username=msg.from_user.full_name))
 
-    logging.info(text.log_upload
-                 .format(title=result[0], userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region INFO
 @router.callback_query(F.data == "info")
