@@ -8,7 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from filters import IDFilter
 from db import datab
-import logging, random
+import logging
 import kb, config
 from additional import Additions
 from text import Text as text
@@ -16,18 +16,7 @@ from text import Text as text
 misc = Additions
 datab.makeconnection()
 router = Router()
-#region Logic
-async def Upload(msg, state, result):
-    await state.clear()
 
-    ans = datab.addtodb(title=result[0], text=result[1])
-
-    await misc.msg_to_edit.edit_text(text=ans, reply_markup=kb.menu)
-    await msg.delete()
-    
-    logging.info(text.log_upload
-                    .format(title=result[0], userid=msg.from_user.id, username=msg.from_user.full_name))
-#endregion
 #region StartMenu
 
 @router.message(Command("start"))
