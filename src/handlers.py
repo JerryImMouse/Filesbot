@@ -145,7 +145,7 @@ async def delete_text(msg: Message, state: FSMContext):
     await misc.msg_to_edit.edit_text(text=datab.deletefromdb(title), reply_markup=kb.menu)
     await msg.delete()
     logging.info(text.log_deleted
-                 .format(title=datab.title, userid=msg.from_user.id, username=msg.from_user.full_name))
+                 .format(title=title, userid=msg.from_user.id, username=msg.from_user.full_name))
 #endregion
 #region Misc
 
